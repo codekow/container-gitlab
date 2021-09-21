@@ -70,14 +70,6 @@ podman restart podman-gitlab
 podman exec -it podman-gitlab gitlab-rake gitlab:check SANITIZE=true
 ```
 
-
-Crontab Entry
-```
-cat << EOL > /etc/cron.daily/gitlab
-15 04 * * 2-6  gitlab-ctl backup-etc && cd /etc/gitlab/config_backup && cp $(ls -t | head -n1) /secret/gitlab/backups/
-EOL
-```
-
 ## Podman 
 
 Add registry mirror
@@ -135,3 +127,4 @@ systemctl enable --now podman-auto-update.timer
 
 # Links
 - https://www.redhat.com/sysadmin/manage-container-registries
+- https://docs.gitlab.com/ee/raketasks/backup_restore.html
