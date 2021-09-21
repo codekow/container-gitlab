@@ -34,7 +34,7 @@ sudo systemctl status container-gitlab
 
 # GitLab Notes
 
-Backup gitlab (podman)
+Backup gitlab
 ```
 # Run backups with shell
 podman exec -it podman-gitlab /bin/bash
@@ -49,7 +49,7 @@ podman exec -it <name of container> gitlab-backup create
 ```
 
 
-Restore gitlab (podman) w/ shell
+Restore gitlab
 ```
 podman exec -it podman-gitlab /bin/bash
 
@@ -97,6 +97,7 @@ YAML
 Fix SELINUX context
 ```
 semanage fcontext -l | grep ^/srv
+
 chcon -t container_file_t -R /srv/containers
 restorecon -RvF /srv/containers
 ```
