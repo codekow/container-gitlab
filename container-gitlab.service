@@ -23,14 +23,14 @@ ExecStart=/usr/bin/podman run \
   --replace \
   --detach \
   --label io.containers.autoupdate=registry \
-  --hostname gitlab.local \
+  --hostname gitlab \
   --publish 443:443 \
   --publish 80:80 \
   --publish 5000:5000 \
   --publish 2222:22 \
   --memory 8g \
   --cpus 2 \
-  --name gitlab \
+  --name podman-gitlab \
   --restart always \
   --volume /srv/containers/gitlab/config:/etc/gitlab:Z \
   --volume /srv/containers/gitlab/logs:/var/log/gitlab:Z \

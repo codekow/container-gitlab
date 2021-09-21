@@ -29,7 +29,7 @@ ${PODMAN_CMD} ${PODMAN_OPT:-run} --detach \
   --publish ${GITLAB_SSH_PORT}:22 \
   --memory 8g \
   --cpus 2 \
-  --name gitlab \
+  --name podman-gitlab \
   --restart always \
   --volume ${GITLAB_ROOT}/gitlab/config:/etc/gitlab:Z \
   --volume ${GITLAB_ROOT}/gitlab/logs:/var/log/gitlab:Z \

@@ -9,7 +9,7 @@ dnf -y install podman
 systemctl enable --now podman-auto-update.timer
 
 # One shot
-hacks/gitlab-setup.sh
+. hacks/gitlab-setup.sh
 ```
 
 Manual Steps
@@ -32,7 +32,53 @@ sudo podman container ls
 sudo systemctl status container-gitlab
 ```
 
-# Notes
+# GitLab Notes
+
+Backup gitlab (podman)
+```
+# Run backups with shell
+podman exec -it podman-gitlab /bin/bash
+gitlab-ctl backup-etc
+#gitlab-ctl stop gitaly
+gitlab-backup create
+#gitlab-ctl start gitaly
+
+# Run backups without shell
+podman exec -it <name of container> gitlab-ctl backup-etc
+podman exec -it <name of container> gitlab-backup create
+```
+
+
+Restore gitlab (podman) w/ shell
+```
+podman exec -it podman-gitlab /bin/bash
+
+# Stop the processes that are connected to the database
+gitlab-ctl stop puma
+gitlab-ctl stop sidekiq
+
+# Verify that the processes are all down before continuing
+gitlab-ctl status
+
+# Run the restore
+gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
+
+# Restart the GitLab container
+podman restart podman-gitlab
+
+# Check GitLab
+podman exec -it podman-gitlab gitlab-rake gitlab:check SANITIZE=true
+```
+
+
+Crontab Entry
+```
+cat << EOL > /etc/cron.daily/gitlab
+15 04 * * 2-6  gitlab-ctl backup-etc && cd /etc/gitlab/config_backup && cp $(ls -t | head -n1) /secret/gitlab/backups/
+EOL
+```
+
+## Podman 
 
 Add registry mirror
 
@@ -54,75 +100,6 @@ semanage fcontext -l | grep ^/srv
 chcon -t container_file_t -R /srv/containers
 restorecon -RvF /srv/containers
 ```
-
-Run gitlab with kube config in podman
-```
-podman play kube podman-kube.yml
-```
-
-Backup gitlab (podman)
-```
-# Run backups with shell
-podman exec -it <name of container> /bin/bash
-gitlab-ctl backup-etc
-gitlab-ctl stop gitaly
-gitlab-backup create
-gitlab-ctl start gitaly
-
-# Run backups without shell
-podman exec -it <name of container> gitlab-ctl backup-etc
-podman exec -it <name of container> gitlab-backup create
-```
-
-Restore gitlab (podman)
-```
-# Stop the processes that are connected to the database
-podman exec -it <name of container> gitlab-ctl stop puma
-podman exec -it <name of container> gitlab-ctl stop sidekiq
-
-# Verify that the processes are all down before continuing
-podman exec -it <name of container> gitlab-ctl status
-
-# Run the restore
-podman exec -it <name of container> gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
-
-# Restart the GitLab container
-podman restart <name of container>
-
-# Check GitLab
-podman exec -it <name of container> gitlab-rake gitlab:check SANITIZE=true
-```
-
-Restore gitlab (podman) w/ shell
-```
-podman exec -it <name of container> /bin/bash
-
-# Stop the processes that are connected to the database
-gitlab-ctl stop puma
-gitlab-ctl stop sidekiq
-
-# Verify that the processes are all down before continuing
-gitlab-ctl status
-
-# Run the restore
-gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
-
-# Restart the GitLab container
-podman restart <name of container>
-
-# Check GitLab
-podman exec -it <name of container> gitlab-rake gitlab:check SANITIZE=true
-```
-
-
-Crontab Entry
-```
-cat << EOL > /etc/cron.daily/gitlab
-15 04 * * 2-6  gitlab-ctl backup-etc && cd /etc/gitlab/config_backup && cp $(ls -t | head -n1) /secret/gitlab/backups/
-EOL
-```
-
-## Podman 
 
 Systemd
 ```
