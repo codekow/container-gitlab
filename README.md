@@ -2,10 +2,21 @@
 
 # Quickstart
 ```
+# Install podman
+dnf -y install podman
+
+# Auto Updates (daily)
+systemctl enable --now podman-auto-update.timer
+
 # One shot
 hacks/gitlab-setup.sh
+```
 
-# Manual Steps
+Manual Steps
+```
+# Setup Folders
+GITLAB_ROOT=/srv/containers
+sudo mkdir -p ${GITLAB_ROOT}/gitlab/{data,logs,config}
 
 # Copy service file
 sudo cp container-gitlab.service /etc/systemd/system/
