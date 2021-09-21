@@ -83,7 +83,7 @@ EOL
 Add registry mirror
 
 ```
-cat << YAML > /etc/containers/registries.conf.d/001-tigerlab.conf
+cat << TOML > /etc/containers/registries.conf.d/001-tigerlab.conf
 [[registry]]
 location = "git.tigerlab.io:6666"
 
@@ -91,7 +91,7 @@ location = "git.tigerlab.io:6666"
 location = "podman.io"
 [[registry.mirror]]
 location = "git.tigerlab.io:6666"
-YAML
+TOML
 ```
 
 Fix SELINUX context
