@@ -34,18 +34,18 @@ sudo systemctl status container-gitlab
 
 # GitLab Notes
 
+Disable service on startup
+```
+sudo systemctl disable gitlab-runsvdir.service
+```
+
 Backup gitlab
 ```
 # Run backups with shell
 podman exec -it podman-gitlab /bin/bash
-gitlab-ctl backup-etc
-#gitlab-ctl stop gitaly
-gitlab-backup create
-#gitlab-ctl start gitaly
 
-# Run backups without shell
-podman exec -it <name of container> gitlab-ctl backup-etc
-podman exec -it <name of container> gitlab-backup create
+gitlab-ctl backup-etc
+gitlab-backup create
 ```
 
 
@@ -80,7 +80,7 @@ cat << TOML > /etc/containers/registries.conf.d/001-tigerlab.conf
 location = "git.tigerlab.io:6666"
 
 [[registry]]
-location = "podman.io"
+location = "docker.io"
 [[registry.mirror]]
 location = "git.tigerlab.io:6666"
 TOML

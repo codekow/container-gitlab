@@ -26,7 +26,7 @@ ExecStart=/usr/bin/podman run \
   --hostname gitlab \
   --publish 443:443 \
   --publish 80:80 \
-  --publish 5000:5000 \
+  --publish 5050:5050 \
   --publish 2222:22 \
   --memory 8g \
   --cpus 2 \
